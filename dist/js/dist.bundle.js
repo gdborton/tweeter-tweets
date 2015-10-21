@@ -54,7 +54,7 @@
 /******/ 	
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "cc8df59f139a17825832"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "27e21e7df1463bcd82a9"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -25534,7 +25534,7 @@
 	'use strict';
 	
 	var React = __webpack_require__(64);
-	var twitterHandleRegex = __webpack_require__(219);
+	var linkify = __webpack_require__(219);
 	
 	var _require = __webpack_require__(169);
 	
@@ -25544,30 +25544,9 @@
 	  displayName: 'Tweet',
 	
 	  render: function render() {
-	    var text = this.props.tweet.text.split(twitterHandleRegex);
-	    text = text.map(function (part, index) {
-	      if (twitterHandleRegex.test(part)) {
-	        return React.createElement(
-	          'span',
-	          { key: index },
-	          React.createElement(
-	            Link,
-	            { to: '/user/' + part.match(twitterHandleRegex)[0].replace(/@/, '') },
-	            part
-	          ),
-	          ' '
-	        );
-	      }
-	
-	      return React.createElement(
-	        'span',
-	        { key: index },
-	        part,
-	        ' '
-	      );
-	    });
+	    var text = linkify.linkify(this.props.tweet.text);
 	    var user = this.props.tweet.user;
-	    console.log(user);
+	
 	    return React.createElement(
 	      'div',
 	      { className: 'panel panel-default' },
@@ -25586,8 +25565,7 @@
 	            React.createElement(
 	              'small',
 	              { className: 'text-muted' },
-	              '@',
-	              user.screen_name
+	              linkify.linkify('@' + user.screen_name)
 	            )
 	          ),
 	          text
@@ -25608,11 +25586,44 @@
 
 	/* WEBPACK VAR INJECTION */(function(module) {/* REACT HOT LOADER */ if (true) { (function () { var ReactHotAPI = __webpack_require__(3), RootInstanceProvider = __webpack_require__(11), ReactMount = __webpack_require__(13), React = __webpack_require__(64); module.makeHot = module.hot.data ? module.hot.data.makeHot : ReactHotAPI(function () { return RootInstanceProvider.getRootInstances(ReactMount); }, React); })(); } try { (function () {
 	
-	"use strict";
+	'use strict';
 	
-	module.exports = /(@\w{1,15})/g;
+	var Link = __webpack_require__(169).Link;
+	var React = __webpack_require__(64);
+	var twitterHandle = {
+	  pattern: /(@\w{1,15})/,
+	  linkify: function linkify(text) {
+	    var parts = text.split(twitterHandle.pattern);
+	    parts = parts.map(function (part, index) {
+	      var word = part;
 	
-	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(220); if (makeExportsHot(module, __webpack_require__(64))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "twitter-handle.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
+	      if (twitterHandle.pattern.test(word)) {
+	        word = twitterHandle.createTwitterHandle(part);
+	      }
+	
+	      return React.createElement(
+	        'span',
+	        { key: index },
+	        word,
+	        ' '
+	      );
+	    });
+	
+	    return parts;
+	  },
+	
+	  createTwitterHandle: function createTwitterHandle(handle) {
+	    return React.createElement(
+	      Link,
+	      { to: '/user/' + handle.match(twitterHandle.pattern)[0].replace(/@/, '') },
+	      handle
+	    );
+	  }
+	};
+	
+	module.exports = twitterHandle;
+	
+	/* REACT HOT LOADER */ }).call(this); } finally { if (true) { (function () { var foundReactClasses = module.hot.data && module.hot.data.foundReactClasses || false; if (module.exports && module.makeHot) { var makeExportsHot = __webpack_require__(220); if (makeExportsHot(module, __webpack_require__(64))) { foundReactClasses = true; } var shouldAcceptModule = true && foundReactClasses; if (shouldAcceptModule) { module.hot.accept(function (err) { if (err) { console.error("Cannot not apply hot update to " + "linkify.js" + ": " + err.message); } }); } } module.hot.dispose(function (data) { data.makeHot = module.makeHot; data.foundReactClasses = foundReactClasses; }); })(); } }
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(2)(module)))
 
 /***/ },
